@@ -4,6 +4,7 @@
 # Environment variables
 .env
 backend/.env
+frontend/.env
 
 # Python
 __pycache__/
@@ -30,8 +31,11 @@ wheels/
 .installed.cfg
 *.egg
 
-# Uploaded files
+# Backend runtime artifacts
+backend/venv/
 backend/uploads/
+
+# Generated media
 uploads/
 *.mp3
 *.wav
