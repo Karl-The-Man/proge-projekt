@@ -1,8 +1,10 @@
 /**
- * Main application logic for music generation frontend
+ * Peamine rakendusloogika muusika genereerimise frontendis
  * 
- * This module handles UI interactions, file uploads, form management,
- * and coordinates between the UI and API modules.
+ * See moodul haldab UI interaktsioone, faili üleslaadimisi, vormihaldust
+ * ning koordineerib UI ja API moodulite vahel.
+ * Autor: Elias Teikari
+ * Kuupäev: 12.11.2025
  */
 
 // Application state

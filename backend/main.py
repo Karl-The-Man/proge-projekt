@@ -1,13 +1,12 @@
 """
-FastAPI Backend for Suno Music Generation
-==========================================
+FastAPI Backend Suno muusika genereerimiseks
 
-This backend integrates with the Suno API to provide AI-powered music generation.
-It acts as a proxy between the frontend and the Suno API, handling file uploads,
-task tracking, and status polling.
+See taustateenus integreerub Suno API-ga, et pakkuda tehisintellektil põhinevat muusika loomist.
+See toimib vahendajana (proksina) esiosa (frontendi) ja Suno API vahel, tegeledes failide üleslaadimise,
+ülesannete jälgimise ja oleku päringutega.
 
-Authors: [Your Names]
-Date: 2025-01-12
+Autorid: Oliver Iida, Karl Elmar Vikat, Elias Teikari
+Kuupäev: 12.11.2025
 """
 
 import os
