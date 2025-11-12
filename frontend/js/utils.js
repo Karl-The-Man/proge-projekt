@@ -149,7 +149,7 @@ function resetForm() {
     if (weirdnessConstraint) weirdnessConstraint.value = '0.65';
     if (styleWeight) styleWeight.value = '0.65';
     if (audioWeight) audioWeight.value = '0.65';
-    if (modelSelect) modelSelect.value = 'V3_5';
+    if (modelSelect) modelSelect.value = 'V5';
     if (instrumentalToggle) instrumentalToggle.checked = true;
     
     // Update displayed values

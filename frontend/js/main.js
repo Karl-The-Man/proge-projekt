@@ -223,7 +223,7 @@ async function handleGenerate() {
         weirdnessConstraint: weirdnessConstraint ? parseFloat(weirdnessConstraint.value) : 0.65,
         styleWeight: styleWeight ? parseFloat(styleWeight.value) : 0.65,
         audioWeight: audioWeight ? parseFloat(audioWeight.value) : 0.65,
-        model: modelSelect ? modelSelect.value : 'V3_5',
+        model: modelSelect ? modelSelect.value : 'V5',
         instrumental: instrumentalToggle ? instrumentalToggle.checked : true
     };
 
