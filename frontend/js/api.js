@@ -23,6 +23,7 @@ async function uploadAndGenerate(file, prompt, settings) {
     formData.append('prompt', prompt);
     formData.append('weirdnessConstraint', settings.weirdnessConstraint);
     formData.append('styleWeight', settings.styleWeight);
+    formData.append('audioWeight', settings.audioWeight);
     formData.append('model', settings.model);
     formData.append('instrumental', settings.instrumental);
 

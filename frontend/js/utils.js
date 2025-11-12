@@ -142,11 +142,13 @@ function resetForm() {
     // Reset settings to defaults
     const weirdnessConstraint = document.getElementById('weirdnessConstraint');
     const styleWeight = document.getElementById('styleWeight');
+    const audioWeight = document.getElementById('audioWeight');
     const modelSelect = document.getElementById('modelSelect');
     const instrumentalToggle = document.getElementById('instrumentalToggle');
     
     if (weirdnessConstraint) weirdnessConstraint.value = '0.65';
     if (styleWeight) styleWeight.value = '0.65';
+    if (audioWeight) audioWeight.value = '0.65';
     if (modelSelect) modelSelect.value = 'V3_5';
     if (instrumentalToggle) instrumentalToggle.checked = true;
     
