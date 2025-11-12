@@ -1,12 +1,6 @@
-# Claude Code
-.claude
-
-# Environment variables
 .env
 backend/.env
 frontend/.env
-
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -30,32 +24,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Backend runtime artifacts
 backend/venv/
 backend/uploads/
-
-# Generated media
 uploads/
 *.mp3
 *.wav
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Logs
-*.log
-logs/

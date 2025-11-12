@@ -8,7 +8,7 @@
 // API Configuration
 // TODO: Update this with your ngrok URL when backend is ready
 // You can also set this via localStorage or update it programmatically
-let API_BASE_URL = localStorage.getItem('apiBaseUrl') || 'http://localhost:8000';
+let API_BASE_URL = localStorage.getItem('apiBaseUrl') || 'https://vibracular-harvey-nonfertile.ngrok-free.dev';
 
 /**
  * Uploads a file and starts music generation
