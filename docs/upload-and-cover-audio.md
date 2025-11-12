@@ -150,6 +150,20 @@ paths:
                       required fields (`prompt` only). Lyrics are auto-generated
                       if `instrumental` is `false`.
                     example: true
+              personaId:
+                allOf:
+                  - type: string
+                    description: >-
+                      Only available when Custom Mode (`customMode: true`) is
+                      enabled. Persona ID to apply to the generated music.
+                      Optional. Use this to apply a specific persona style to
+                      your music generation. 
+
+
+                      To generate a persona ID, use the [Generate
+                      Persona](generate-persona) endpoint to create a
+                      personalized music Persona based on generated music.
+                    example: persona_123
               model:
                 allOf:
                   - type: string
@@ -242,6 +256,7 @@ paths:
               title: Peaceful Piano Meditation
               customMode: true
               instrumental: true
+              personaId: persona_123
               model: V3_5
               negativeTags: Heavy Metal, Upbeat Drums
               vocalGender: m
