@@ -81,6 +81,7 @@ function setupEventListeners() {
     // Slider value updates
     const weirdnessSlider = document.getElementById('weirdnessConstraint');
     const styleWeightSlider = document.getElementById('styleWeight');
+    const audioWeightSlider = document.getElementById('audioWeight');
 
     if (weirdnessSlider) {
         weirdnessSlider.addEventListener('input', updateSliderValues);
@@ -88,6 +89,10 @@ function setupEventListeners() {
 
     if (styleWeightSlider) {
         styleWeightSlider.addEventListener('input', updateSliderValues);
+    }
+
+    if (audioWeightSlider) {
+        audioWeightSlider.addEventListener('input', updateSliderValues);
     }
 
     // Generate button
@@ -103,8 +108,10 @@ function setupEventListeners() {
 function updateSliderValues() {
     const weirdnessSlider = document.getElementById('weirdnessConstraint');
     const styleWeightSlider = document.getElementById('styleWeight');
+    const audioWeightSlider = document.getElementById('audioWeight');
     const weirdnessValue = document.getElementById('weirdnessValue');
     const styleWeightValue = document.getElementById('styleWeightValue');
+    const audioWeightValue = document.getElementById('audioWeightValue');
 
     if (weirdnessSlider && weirdnessValue) {
         weirdnessValue.textContent = parseFloat(weirdnessSlider.value).toFixed(2);
@@ -112,6 +119,10 @@ function updateSliderValues() {
 
     if (styleWeightSlider && styleWeightValue) {
         styleWeightValue.textContent = parseFloat(styleWeightSlider.value).toFixed(2);
+    }
+
+    if (audioWeightSlider && audioWeightValue) {
+        audioWeightValue.textContent = parseFloat(audioWeightSlider.value).toFixed(2);
     }
 }
 
@@ -204,12 +215,14 @@ async function handleGenerate() {
     // Get settings
     const weirdnessConstraint = document.getElementById('weirdnessConstraint');
     const styleWeight = document.getElementById('styleWeight');
+    const audioWeight = document.getElementById('audioWeight');
     const modelSelect = document.getElementById('modelSelect');
     const instrumentalToggle = document.getElementById('instrumentalToggle');
 
     const settings = {
         weirdnessConstraint: weirdnessConstraint ? parseFloat(weirdnessConstraint.value) : 0.65,
         styleWeight: styleWeight ? parseFloat(styleWeight.value) : 0.65,
+        audioWeight: audioWeight ? parseFloat(audioWeight.value) : 0.65,
         model: modelSelect ? modelSelect.value : 'V3_5',
         instrumental: instrumentalToggle ? instrumentalToggle.checked : true
     };
