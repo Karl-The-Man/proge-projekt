@@ -1,9 +1,5 @@
-# Claude Code
-.claude
-
 # Environment variables
 .env
-backend/.env
 
 # Python
 __pycache__/
@@ -31,7 +27,6 @@ wheels/
 *.egg
 
 # Uploaded files
-backend/uploads/
 uploads/
 *.mp3
 *.wav
