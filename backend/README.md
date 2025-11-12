@@ -1,3 +1,5 @@
+KIRJUTASIN GUIDE-I OLIVERILE!!!
+
 # Suno API Backend
 
 FastAPI backend that integrates with the Suno API to provide AI-powered music generation capabilities. This backend acts as a proxy between the frontend web application and the Suno API, handling file uploads, task management, and status polling.
