@@ -1,8 +1,10 @@
 /**
- * Utility functions for the music generation frontend
+ * Abifunktsioonid muusika genereerimise frontendi jaoks
  * 
- * This module provides helper functions for file validation,
- * formatting, and UI updates.
+ * See moodul pakub abifunktsioone faili valideerimiseks,
+ * vormindamiseks ja UI uuendusteks.
+ * Autor: Oliver Iida
+ * Kuupäev: 12.11.2025
  */
 
 /**

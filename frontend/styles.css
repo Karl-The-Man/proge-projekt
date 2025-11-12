@@ -1,7 +1,8 @@
-/**
- * Custom styles for music generation frontend
- * Additional styles beyond Tailwind CSS
- */
+/*
+Siin on põhiline veebilehe frontend stiilide loogika
+Autor: Karl Elmar Vikat
+Kuupäev: 12.11.2025
+*/
 
 /* Custom range slider styling */
 input[type="range"] {

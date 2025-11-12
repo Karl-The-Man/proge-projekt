@@ -1,12 +1,12 @@
 /**
- * API communication module for backend integration
+ * API suhtlusmoodul backendiga integreerimiseks
  * 
- * This module handles all communication with the FastAPI backend.
- * Configure the API_BASE_URL to point to your ngrok URL.
+ * See moodul haldab kogu suhtlust FastAPI backendiga.
+ * Seadista `API_BASE_URL` väärtus oma ngrok URL-ile.
+ * Autor: Oliver Iida
+ * Kuupäev: 12.11.2025
  */
 
-// API Configuration
-// TODO: Update this with your ngrok URL when backend is ready
 // You can also set this via localStorage or update it programmatically
 let API_BASE_URL = localStorage.getItem('apiBaseUrl') || 'https://vibracular-harvey-nonfertile.ngrok-free.dev';
 
