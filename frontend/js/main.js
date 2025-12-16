@@ -382,6 +382,55 @@ async function displayResults(taskId) {
 }
 
 /**
+ * Download audio file from URL
+ * Fetches the file as a blob to bypass cross-origin download restrictions
+ */
+async function downloadAudio(url, filename) {
+    try {
+        // Show downloading state
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = 'Downloading...';
+        btn.disabled = true;
+
+        // Fetch the audio file
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Failed to download file');
+        }
+
+        // Convert to blob
+        const blob = await response.blob();
+
+        // Create download link
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Clean up blob URL
+        window.URL.revokeObjectURL(blobUrl);
+
+        // Reset button
+        btn.textContent = originalText;
+        btn.disabled = false;
+
+    } catch (error) {
+        console.error('Download error:', error);
+        alert('Failed to download file. Please try right-clicking the audio player and selecting "Save audio as..."');
+        
+        // Reset button if it exists
+        if (event && event.target) {
+            event.target.textContent = 'Download';
+            event.target.disabled = false;
+        }
+    }
+}
+
+/**
  * Create a track card element
  */
 function createTrackCard(track, trackNumber) {
@@ -393,6 +442,7 @@ function createTrackCard(track, trackNumber) {
     const duration = track.duration || 0;
     const tags = track.tags || '';
     const modelName = track.modelName || track.model_name || 'Unknown';
+    const safeFilename = title.replace(/[^a-z0-9]/gi, '_') + '.mp3';
 
     card.innerHTML = `
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
@@ -407,10 +457,10 @@ function createTrackCard(track, trackNumber) {
             </div>
             <div class="flex gap-2">
                 ${audioUrl ? `
-                    <a href="${audioUrl}" download="${title.replace(/[^a-z0-9]/gi, '_')}.mp3" 
-                       class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    <button onclick="downloadAudio('${audioUrl}', '${safeFilename}')"
+                       class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors cursor-pointer">
                         Download
-                    </a>
+                    </button>
                 ` : ''}
             </div>
         </div>

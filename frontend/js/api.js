@@ -1,6 +1,6 @@
 /**
  * API suhtlusmoodul backendiga integreerimiseks
- * 
+ *
  * See moodul haldab kogu suhtlust FastAPI backendiga.
  * Seadista `API_BASE_URL` väärtus oma ngrok URL-ile.
  * Autor: Oliver Iida
@@ -8,7 +8,9 @@
  */
 
 // You can also set this via localStorage or update it programmatically
-let API_BASE_URL = localStorage.getItem('apiBaseUrl') || 'https://vibracular-harvey-nonfertile.ngrok-free.dev';
+let API_BASE_URL =
+    localStorage.getItem("apiBaseUrl") ||
+    "https://renascent-thu-eerier.ngrok-free.dev";
 
 /**
  * Uploads a file and starts music generation
@@ -19,29 +21,36 @@ let API_BASE_URL = localStorage.getItem('apiBaseUrl') || 'https://vibracular-har
  */
 async function uploadAndGenerate(file, prompt, settings) {
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('prompt', prompt);
-    formData.append('weirdnessConstraint', settings.weirdnessConstraint);
-    formData.append('styleWeight', settings.styleWeight);
-    formData.append('audioWeight', settings.audioWeight);
-    formData.append('model', settings.model);
-    formData.append('instrumental', settings.instrumental);
+    formData.append("file", file);
+    formData.append("prompt", prompt);
+    formData.append("weirdnessConstraint", settings.weirdnessConstraint);
+    formData.append("styleWeight", settings.styleWeight);
+    formData.append("audioWeight", settings.audioWeight);
+    formData.append("model", settings.model);
+    formData.append("instrumental", settings.instrumental);
 
     try {
         const response = await fetch(`${API_BASE_URL}/api/upload-cover`, {
-            method: 'POST',
-            body: formData
+            method: "POST",
+            headers: {
+                "ngrok-skip-browser-warning": "true",
+            },
+            body: formData,
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ msg: 'Unknown error' }));
-            throw new Error(errorData.msg || `HTTP error! status: ${response.status}`);
+            const errorData = await response
+                .json()
+                .catch(() => ({ msg: "Unknown error" }));
+            throw new Error(
+                errorData.msg || `HTTP error! status: ${response.status}`
+            );
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Upload error:', error);
+        console.error("Upload error:", error);
         throw error;
     }
 }
@@ -53,22 +62,30 @@ async function uploadAndGenerate(file, prompt, settings) {
  */
 async function pollGenerationStatus(taskId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/generation-status/${taskId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
+        const response = await fetch(
+            `${API_BASE_URL}/api/generation-status/${taskId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
             }
-        });
+        );
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ msg: 'Unknown error' }));
-            throw new Error(errorData.msg || `HTTP error! status: ${response.status}`);
+            const errorData = await response
+                .json()
+                .catch(() => ({ msg: "Unknown error" }));
+            throw new Error(
+                errorData.msg || `HTTP error! status: ${response.status}`
+            );
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Polling error:', error);
+        console.error("Polling error:", error);
         throw error;
     }
 }
@@ -80,22 +97,30 @@ async function pollGenerationStatus(taskId) {
  */
 async function getGenerationDetails(taskId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/generation-details/${taskId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
+        const response = await fetch(
+            `${API_BASE_URL}/api/generation-details/${taskId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                },
             }
-        });
+        );
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ msg: 'Unknown error' }));
-            throw new Error(errorData.msg || `HTTP error! status: ${response.status}`);
+            const errorData = await response
+                .json()
+                .catch(() => ({ msg: "Unknown error" }));
+            throw new Error(
+                errorData.msg || `HTTP error! status: ${response.status}`
+            );
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Get details error:', error);
+        console.error("Get details error:", error);
         throw error;
     }
 }
@@ -106,7 +131,6 @@ async function getGenerationDetails(taskId) {
  */
 function setApiBaseUrl(url) {
     API_BASE_URL = url;
-    localStorage.setItem('apiBaseUrl', url);
-    console.log('API Base URL updated to:', url);
+    localStorage.setItem("apiBaseUrl", url);
+    console.log("API Base URL updated to:", url);
 }
-
