@@ -11,6 +11,7 @@
 let selectedFile = null;
 let currentTaskId = null;
 let pollingInterval = null;
+let wavesurfer = null;
 
 /**
  * Initialize the application
@@ -55,10 +56,18 @@ function setupEventListeners() {
             selectedFile = null;
             const dropZoneContent = document.getElementById('dropZoneContent');
             const fileInfo = document.getElementById('fileInfo');
+            const waveformContainer = document.getElementById('waveformContainer');
             
             if (dropZoneContent) dropZoneContent.classList.remove('hidden');
             if (fileInfo) fileInfo.classList.add('hidden');
             if (fileInput) fileInput.value = '';
+            
+            // Destroy waveform and hide container when user removes the file
+            if (wavesurfer) {
+                wavesurfer.destroy();
+                wavesurfer = null;
+            }
+            if (waveformContainer) waveformContainer.classList.add('hidden');
         });
     }
 
@@ -194,6 +203,143 @@ function handleFileSelect(file) {
     if (fileInfo) fileInfo.classList.remove('hidden');
     if (fileName) fileName.textContent = file.name;
     if (fileSize) fileSize.textContent = formatFileSize(file.size);
+
+    // Initialize waveform
+    initWaveform(file);
+}
+
+/**
+ * Initialize WaveSurfer waveform visualization
+ */
+function initWaveform(file) {
+    const waveformContainer = document.getElementById('waveformContainer');
+    
+    // Destroy existing instance if any
+    if (wavesurfer) {
+        wavesurfer.destroy();
+        wavesurfer = null;
+    }
+
+    // Create WaveSurfer instance
+    wavesurfer = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: '#93c5fd',
+        progressColor: '#2563eb',
+        cursorWidth: 0,
+        barWidth: 3,
+        barGap: 1,
+        barRadius: 3,
+        height: 80,
+        responsive: true,
+        normalize: true,
+        backend: 'WebAudio'
+    });
+
+    // Create object URL from file and load it
+    const objectUrl = URL.createObjectURL(file);
+    wavesurfer.load(objectUrl);
+
+    // Show waveform container
+    if (waveformContainer) {
+        waveformContainer.classList.remove('hidden');
+    }
+
+    // Set up event listeners
+    setupWaveformControls();
+
+    // Handle ready event
+    wavesurfer.on('ready', () => {
+        const totalDuration = document.getElementById('totalDuration');
+        if (totalDuration) {
+            totalDuration.textContent = formatWaveformTime(wavesurfer.getDuration());
+        }
+    });
+
+    // Handle time update
+    wavesurfer.on('audioprocess', () => {
+        const currentTime = document.getElementById('currentTime');
+        if (currentTime) {
+            currentTime.textContent = formatWaveformTime(wavesurfer.getCurrentTime());
+        }
+    });
+
+    // Handle seek
+    wavesurfer.on('seeking', () => {
+        const currentTime = document.getElementById('currentTime');
+        if (currentTime) {
+            currentTime.textContent = formatWaveformTime(wavesurfer.getCurrentTime());
+        }
+    });
+
+    // Handle play/pause state changes
+    wavesurfer.on('play', () => {
+        updatePlayPauseButton(true);
+    });
+
+    wavesurfer.on('pause', () => {
+        updatePlayPauseButton(false);
+    });
+
+    wavesurfer.on('finish', () => {
+        updatePlayPauseButton(false);
+    });
+}
+
+/**
+ * Set up waveform playback controls
+ */
+function setupWaveformControls() {
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+
+    if (playPauseBtn) {
+        // Remove existing listeners by cloning
+        const newBtn = playPauseBtn.cloneNode(true);
+        playPauseBtn.parentNode.replaceChild(newBtn, playPauseBtn);
+        
+        newBtn.addEventListener('click', () => {
+            if (wavesurfer) {
+                wavesurfer.playPause();
+            }
+        });
+    }
+
+    if (volumeSlider) {
+        // Remove existing listeners by cloning
+        const newSlider = volumeSlider.cloneNode(true);
+        volumeSlider.parentNode.replaceChild(newSlider, volumeSlider);
+        
+        newSlider.addEventListener('input', (e) => {
+            if (wavesurfer) {
+                wavesurfer.setVolume(parseFloat(e.target.value));
+            }
+        });
+    }
+}
+
+/**
+ * Update play/pause button icons
+ */
+function updatePlayPauseButton(isPlaying) {
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+
+    if (isPlaying) {
+        if (playIcon) playIcon.classList.add('hidden');
+        if (pauseIcon) pauseIcon.classList.remove('hidden');
+    } else {
+        if (playIcon) playIcon.classList.remove('hidden');
+        if (pauseIcon) pauseIcon.classList.add('hidden');
+    }
+}
+
+/**
+ * Format time for waveform display (mm:ss)
+ */
+function formatWaveformTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
 /**

@@ -10,7 +10,8 @@ Kuupäev: 12.11.2025
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Muusika genereerimine - Suno API</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 py-8 max-w-4xl">
@@ -40,6 +41,32 @@ Kuupäev: 12.11.2025
                         <p class="text-green-600 font-medium" id="fileName"></p>
                         <p class="text-sm text-gray-500" id="fileSize"></p>
                         <button id="removeFile" class="mt-2 text-red-600 hover:text-red-700 text-sm">Remove file</button>
+                    </div>
+                </div>
+                <!-- Waveform Display -->
+                <div id="waveformContainer" class="hidden mt-4">
+                    <div id="waveform" class="w-full"></div>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center gap-3">
+                            <button id="playPauseBtn" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-10 h-10 flex items-center justify-center transition-all">
+                                <svg id="playIcon" class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <svg id="pauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+                                </svg>
+                            </button>
+                            <span id="currentTime" class="text-gray-700 text-sm font-mono">0:00</span>
+                            <span class="text-gray-400 text-sm">/</span>
+                            <span id="totalDuration" class="text-gray-700 text-sm font-mono">0:00</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                            </svg>
+                            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1" 
+                                class="w-20 h-1 rounded-lg appearance-none cursor-pointer">
+                        </div>
                     </div>
                 </div>
             </section>

@@ -64,6 +64,46 @@ audio::-webkit-media-controls-panel {
     background-color: #f3f4f6;
 }
 
+/* Waveform volume slider styling */
+#volumeSlider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: #e5e7eb;
+}
+
+#volumeSlider::-webkit-slider-track {
+    background: #e5e7eb;
+    height: 4px;
+    border-radius: 2px;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #2563eb;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    margin-top: -5px;
+}
+
+#volumeSlider::-moz-range-track {
+    background: #e5e7eb;
+    height: 4px;
+    border-radius: 2px;
+}
+
+#volumeSlider::-moz-range-thumb {
+    background: #2563eb;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
 /* Smooth transitions */
 * {
     transition-property: color, background-color, border-color, opacity;
