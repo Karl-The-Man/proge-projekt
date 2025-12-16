@@ -2,15 +2,20 @@
  * API suhtlusmoodul backendiga integreerimiseks
  *
  * See moodul haldab kogu suhtlust FastAPI backendiga.
- * Seadista `API_BASE_URL` väärtus oma ngrok URL-ile.
+ * Frontend suhtleb otse localhost:8000 backendiga.
+ * ngrok on vajalik ainult Suno API callback'ide jaoks.
  * Autor: Oliver Iida
  * Kuupäev: 12.11.2025
  */
 
-// You can also set this via localStorage or update it programmatically
-let API_BASE_URL =
-    localStorage.getItem("apiBaseUrl") ||
-    "https://renascent-thu-eerier.ngrok-free.dev";
+// Frontend always communicates with backend on localhost
+// ngrok is only needed for Suno API callbacks (configured in backend .env)
+// Clear any old cached ngrok URLs from localStorage
+if (localStorage.getItem("apiBaseUrl")?.includes("ngrok")) {
+    localStorage.removeItem("apiBaseUrl");
+}
+
+let API_BASE_URL = "http://localhost:8000";
 
 /**
  * Uploads a file and starts music generation
