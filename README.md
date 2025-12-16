@@ -2,6 +2,10 @@
 
 Rakendus, mis genereerib AI abil muusikat Suno API kaudu.
 
+# demo video appist
+
+[Link](https://www.dropbox.com/scl/fi/gxwoh3vjax5m65otsbr2v/demo.mp4?rlkey=osp12wtf1mo6r9vvdhgjykaqw&st=8yxhstu1&dl=0)
+
 ## Mida on vaja enne käivitamist
 
 1. Python 3
@@ -11,7 +15,7 @@ Rakendus, mis genereerib AI abil muusikat Suno API kaudu.
 
 ### 1. Loo .env fail
 
-Loo fail `backend/.env` 
+Loo fail `backend/.env`
 
 ```bash
 cd backend
