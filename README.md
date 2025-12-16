@@ -1,40 +1,54 @@
-# Jooksutamise käsud
+# Suno Muusika Generaator
 
-## Mine backendi
-cd backend
+Rakendus, mis genereerib AI abil muusikat Suno API kaudu.
 
-## loo virtuaalne keskkond (1 kord)
-python3 -m venv venv          # macOS/Linux
-py -m venv venv               # Windows
+## Mida on vaja enne käivitamist
 
-## aktiveeri virtuaalne keskkond (1 kord)
-source venv/bin/activate      # macOS/Linux
-.\venv\Scripts\Activate.ps1   # Windows PowerShell
-venv\Scripts\activate.bat     # Windows CMD
+1. Python 3
+2. ngrok (laadi alla: https://ngrok.com/download või `brew install ngrok` macOS-il)
 
-## lae alla sõltuvused
-pip install -r requirements.txt
+## Seadistamine
 
-## kopeeri .env näidismalli
-cp .env.example .env          # macOS/Linux
-copy .env.example .env        # Windows
+### 1. Loo .env fail
 
-## jooksuta backendi
-python3 main.py               # macOS/Linux
-py main.py                    # Windows
+Loo fail `backend/.env` ja kirjuta sinna:
 
-## loo avalik URL Suno API-ga ühenduse saamiseks (kohustuslik)
-ngrok http 8000
+```
+SUNO_API_KEY=sinu_api_võti_siia
+```
 
-## frontend
-cd frontend
+API võtme saad: https://www.sunoapi.org/
 
-## muuda failis frontend/js/api.js -> API_BASE_URL = "https://<sinu-ngroki-subdomain>.ngrok.io"
+### 2. Seadista ngrok
 
-## alusta frontendi lokaalselt
-python3 -m http.server 8080   # macOS/Linux
-py -m http.server 8080        # Windows
-npx serve .
+Tee endale ngrok konto: https://dashboard.ngrok.com/signup
 
-## ava brauseris
-http://localhost:8080
+Seejärel käivita terminalis:
+
+```
+ngrok config add-authtoken SINU_TOKEN_SIIA
+```
+
+## Käivitamine
+
+Kõige lihtsam on käivitada nii:
+
+```
+./start.sh
+```
+
+Kui kõik töötab, siis ava brauseris: http://localhost:8080
+
+Sulgemiseks vajuta `Ctrl+C`
+
+## Kui midagi ei tööta
+
+**"backend/.env file not found"** - sul puudub .env fail, loo see (vaata punkt 1)
+
+**"ngrok is not installed"** - installi ngrok
+
+**"Could not get ngrok URL"** - käivita `ngrok config add-authtoken SINU_TOKEN`
+
+## Autorid
+
+Oliver Iida, Karl Elmar Vikat, Elias Teikari

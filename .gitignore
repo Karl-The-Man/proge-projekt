@@ -1,4 +1,5 @@
 .env
+.env.bak
 backend/.env
 frontend/.env
 __pycache__/
