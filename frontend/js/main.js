@@ -1,10 +1,10 @@
 /**
  * Peamine rakendusloogika muusika genereerimise frontendis
  * 
- * See moodul haldab UI interaktsioone, faili üleslaadimisi, vormihaldust
+ * See moodul haldab UI interaktsioone, waveforme, faili üleslaadimisi, vormihaldust
  * ning koordineerib UI ja API moodulite vahel.
- * Autor: Elias Teikari
- * Kuupäev: 12.11.2025
+ * Autor: Elias Teikari, Oliver Iida
+ * Kuupäev: 12.11.2025, 16.12.2025
  */
 
 // Application state
@@ -577,7 +577,7 @@ async function downloadAudio(url, filename) {
 }
 
 /**
- * Create a track card element
+ * Create a track card element with waveform visualization
  */
 function createTrackCard(track, trackNumber) {
     const card = document.createElement('div');
@@ -589,6 +589,13 @@ function createTrackCard(track, trackNumber) {
     const tags = track.tags || '';
     const modelName = track.modelName || track.model_name || 'Unknown';
     const safeFilename = title.replace(/[^a-z0-9]/gi, '_') + '.mp3';
+    const waveformId = `waveform-track-${trackNumber}`;
+    const playBtnId = `playBtn-track-${trackNumber}`;
+    const playIconId = `playIcon-track-${trackNumber}`;
+    const pauseIconId = `pauseIcon-track-${trackNumber}`;
+    const currentTimeId = `currentTime-track-${trackNumber}`;
+    const totalDurationId = `totalDuration-track-${trackNumber}`;
+    const volumeSliderId = `volumeSlider-track-${trackNumber}`;
 
     card.innerHTML = `
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
@@ -611,14 +618,131 @@ function createTrackCard(track, trackNumber) {
             </div>
         </div>
         ${audioUrl ? `
-            <audio controls class="w-full mt-4">
-                <source src="${audioUrl}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
+            <!-- Waveform Container -->
+            <div class="mt-4">
+                <div id="${waveformId}" class="w-full"></div>
+                <div class="flex items-center justify-between mt-3">
+                    <div class="flex items-center gap-3">
+                        <button id="${playBtnId}" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-10 h-10 flex items-center justify-center transition-all">
+                            <svg id="${playIconId}" class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg id="${pauseIconId}" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+                            </svg>
+                        </button>
+                        <span id="${currentTimeId}" class="text-gray-700 text-sm font-mono">0:00</span>
+                        <span class="text-gray-400 text-sm">/</span>
+                        <span id="${totalDurationId}" class="text-gray-700 text-sm font-mono">0:00</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                        </svg>
+                        <input type="range" id="${volumeSliderId}" min="0" max="1" step="0.1" value="1" 
+                            class="w-20 h-1 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+            </div>
         ` : '<p class="text-red-600">Audio URL not available</p>'}
     `;
 
+    // Initialize waveform after card is added to DOM
+    if (audioUrl) {
+        setTimeout(() => {
+            initTrackWaveform(audioUrl, waveformId, playBtnId, playIconId, pauseIconId, currentTimeId, totalDurationId, volumeSliderId);
+        }, 100);
+    }
+
     return card;
+}
+
+/**
+ * Initialize WaveSurfer waveform for a generated track
+ */
+function initTrackWaveform(audioUrl, waveformId, playBtnId, playIconId, pauseIconId, currentTimeId, totalDurationId, volumeSliderId) {
+    const waveformContainer = document.getElementById(waveformId);
+    if (!waveformContainer) return;
+
+    // Create WaveSurfer instance for this track
+    const trackWavesurfer = WaveSurfer.create({
+        container: `#${waveformId}`,
+        waveColor: '#93c5fd',
+        progressColor: '#2563eb',
+        cursorWidth: 0,
+        barWidth: 3,
+        barGap: 1,
+        barRadius: 3,
+        height: 80,
+        responsive: true,
+        normalize: true,
+        backend: 'WebAudio'
+    });
+
+    // Load audio from URL
+    trackWavesurfer.load(audioUrl);
+
+    // Set up play/pause button
+    const playBtn = document.getElementById(playBtnId);
+    if (playBtn) {
+        playBtn.addEventListener('click', () => {
+            trackWavesurfer.playPause();
+        });
+    }
+
+    // Set up volume slider
+    const volumeSlider = document.getElementById(volumeSliderId);
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', (e) => {
+            trackWavesurfer.setVolume(parseFloat(e.target.value));
+        });
+    }
+
+    // Handle ready event
+    trackWavesurfer.on('ready', () => {
+        const totalDuration = document.getElementById(totalDurationId);
+        if (totalDuration) {
+            totalDuration.textContent = formatWaveformTime(trackWavesurfer.getDuration());
+        }
+    });
+
+    // Handle time update
+    trackWavesurfer.on('audioprocess', () => {
+        const currentTime = document.getElementById(currentTimeId);
+        if (currentTime) {
+            currentTime.textContent = formatWaveformTime(trackWavesurfer.getCurrentTime());
+        }
+    });
+
+    // Handle seek
+    trackWavesurfer.on('seeking', () => {
+        const currentTime = document.getElementById(currentTimeId);
+        if (currentTime) {
+            currentTime.textContent = formatWaveformTime(trackWavesurfer.getCurrentTime());
+        }
+    });
+
+    // Handle play/pause state changes
+    trackWavesurfer.on('play', () => {
+        const playIcon = document.getElementById(playIconId);
+        const pauseIcon = document.getElementById(pauseIconId);
+        if (playIcon) playIcon.classList.add('hidden');
+        if (pauseIcon) pauseIcon.classList.remove('hidden');
+    });
+
+    trackWavesurfer.on('pause', () => {
+        const playIcon = document.getElementById(playIconId);
+        const pauseIcon = document.getElementById(pauseIconId);
+        if (playIcon) playIcon.classList.remove('hidden');
+        if (pauseIcon) pauseIcon.classList.add('hidden');
+    });
+
+    trackWavesurfer.on('finish', () => {
+        const playIcon = document.getElementById(playIconId);
+        const pauseIcon = document.getElementById(pauseIconId);
+        if (playIcon) playIcon.classList.remove('hidden');
+        if (pauseIcon) pauseIcon.classList.add('hidden');
+    });
 }
 
 // Initialize application when DOM is loaded
