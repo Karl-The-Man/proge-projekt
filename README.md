@@ -11,7 +11,14 @@ Rakendus, mis genereerib AI abil muusikat Suno API kaudu.
 
 ### 1. Loo .env fail
 
-Loo fail `backend/.env` ja kirjuta sinna:
+Loo fail `backend/.env` 
+
+```bash
+cd backend
+cp .env.example .env
+```
+
+asenda `backend/.env` failis SUNO_API_KEY oma API võtmega:
 
 ```
 SUNO_API_KEY=sinu_api_võti_siia
