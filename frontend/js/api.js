@@ -3,13 +3,12 @@
  *
  * See moodul haldab kogu suhtlust FastAPI backendiga.
  * Frontend suhtleb otse localhost:8000 backendiga.
- * ngrok on vajalik ainult Suno API callback'ide jaoks.
- * Autor: Oliver Iida
- * Kuupäev: 12.11.2025
+ * ngrok on vajalik ainult Suno API callback'ide jaoks (ngrok url on backend .env failis)
+ * Autor: Oliver Iida, Karl Elmar Vikat, Elias Teikari
+ * Kuupäev: 12.11.2025, 16.12.2025
  */
 
-// Frontend always communicates with backend on localhost
-// ngrok is only needed for Suno API callbacks (configured in backend .env)
+
 // Clear any old cached ngrok URLs from localStorage
 if (localStorage.getItem("apiBaseUrl")?.includes("ngrok")) {
     localStorage.removeItem("apiBaseUrl");

@@ -3,10 +3,10 @@ FastAPI Backend Suno muusika genereerimiseks
 
 See taustateenus integreerub Suno API-ga, et pakkuda tehisintellektil põhinevat muusika loomist.
 See toimib vahendajana (proksina) esiosa (frontendi) ja Suno API vahel, tegeledes failide üleslaadimise,
-ülesannete jälgimise ja oleku päringutega.
+ülesannete jälgimise ja oleku päringutega. Lisasime projekti ka error handlerid ja health check endpoint.
 
 Autorid: Oliver Iida, Karl Elmar Vikat, Elias Teikari
-Kuupäev: 12.11.2025
+Kuupäev: 12.11.2025, 16.12.2025
 """
 
 import os
@@ -320,11 +320,6 @@ async def upload_and_cover(
 
 @app.post("/api/suno-callback")
 async def suno_callback(request_data: dict):
-    """
-    Callback endpoint to receive notifications from Suno API when generation completes
-
-    This endpoint is called by Suno API with task results.
-    """
     try:
         print(f"Received Suno callback: {request_data}")
 

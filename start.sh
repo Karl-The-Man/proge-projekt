@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Suno Music Generation App - Startup Script
-# This script starts backend, frontend, and ngrok servers
+# See skript alustab backendi, frontendi ja ngroki
+# Autor: Oliver Iida, Karl Elmar Vikat, Elias Teikari
+# Kuupäev: 16.12.2025
 
 set -e
 
