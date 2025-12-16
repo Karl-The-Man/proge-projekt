@@ -111,6 +111,10 @@ class GenerationDetailsResponse(BaseModel):
     data: dict
 
 
+# In-memory storage for callback results (in production, use a database)
+callback_results: dict[str, dict] = {}
+
+
 # Helper functions
 def get_suno_headers() -> dict:
     """Get headers for Suno API requests"""
@@ -228,6 +232,9 @@ async def upload_and_cover(
         print(f"File uploaded: {unique_filename}")
         print(f"Public URL: {upload_url}")
 
+        # Build callback URL using public base URL
+        callback_url = f"{settings.public_base_url}/api/suno-callback"
+
         # Prepare request to Suno API
         suno_payload = {
             "uploadUrl": upload_url,
@@ -237,7 +244,8 @@ async def upload_and_cover(
             "model": model,
             "weirdnessConstraint": weirdnessConstraint,
             "styleWeight": styleWeight,
-            "audioWeight": audioWeight
+            "audioWeight": audioWeight,
+            "callBackUrl": callback_url
         }
 
         # Add optional style and title for custom mode
@@ -273,8 +281,24 @@ async def upload_and_cover(
 
             result = response.json()
 
+            # Check the JSON response code (Suno API returns errors with HTTP 200)
+            api_code = result.get("code")
+            if api_code != 200:
+                error_msg = result.get("msg", "Unknown error from Suno API")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Suno API error: {error_msg}"
+                )
+
             # Extract task ID from response
-            task_id = result.get("data", {}).get("taskId")
+            data = result.get("data")
+            if not data:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="No data received from Suno API"
+                )
+
+            task_id = data.get("taskId")
             if not task_id:
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -294,6 +318,41 @@ async def upload_and_cover(
         )
 
 
+@app.post("/api/suno-callback")
+async def suno_callback(request_data: dict):
+    """
+    Callback endpoint to receive notifications from Suno API when generation completes
+
+    This endpoint is called by Suno API with task results.
+    """
+    try:
+        print(f"Received Suno callback: {request_data}")
+
+        code = request_data.get("code")
+        msg = request_data.get("msg")
+        data = request_data.get("data", {})
+
+        task_id = data.get("task_id")
+        callback_type = data.get("callbackType")
+
+        if task_id:
+            # Store the callback result for later retrieval
+            callback_results[task_id] = {
+                "code": code,
+                "msg": msg,
+                "callbackType": callback_type,
+                "data": data.get("data"),
+                "received_at": str(uuid.uuid4())  # Using UUID as timestamp marker
+            }
+            print(f"Stored callback result for task {task_id}: {callback_type}")
+
+        return {"status": "received"}
+
+    except Exception as e:
+        print(f"Error in suno_callback: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+
 @app.get("/api/generation-status/{task_id}")
 async def get_generation_status(task_id: str):
     """
@@ -306,6 +365,24 @@ async def get_generation_status(task_id: str):
         Status information including current state and any errors
     """
     try:
+        # First check if we have callback results for this task
+        if task_id in callback_results:
+            callback = callback_results[task_id]
+            callback_type = callback.get("callbackType")
+
+            if callback_type == "complete":
+                return {
+                    "status": "SUCCESS",
+                    "data": {"callbackData": callback.get("data")},
+                    "errorMessage": None
+                }
+            elif callback_type == "error":
+                return {
+                    "status": "FAILED",
+                    "data": None,
+                    "errorMessage": callback.get("msg", "Generation failed")
+                }
+
         # Call Suno API to get task info
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.get(
