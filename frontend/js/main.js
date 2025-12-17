@@ -2,7 +2,7 @@
  * Peamine rakendusloogika muusika genereerimise frontendis
  * 
  * See moodul haldab UI interaktsioone, waveforme, faili üleslaadimisi, vormihaldust
- * ning koordineerib UI ja API moodulite vahel.
+ * ning koordineerib tööd UI ja API moodulite vahel.
  * Autor: Elias Teikari, Oliver Iida
  * Kuupäev: 12.11.2025, 16.12.2025
  */

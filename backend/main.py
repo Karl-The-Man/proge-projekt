@@ -111,7 +111,7 @@ class GenerationDetailsResponse(BaseModel):
     data: dict
 
 
-# In-memory storage for callback results (in production, use a database)
+# In-memory storage for callback results
 callback_results: dict[str, dict] = {}
 
 
@@ -122,32 +122,6 @@ def get_suno_headers() -> dict:
         "Authorization": f"Bearer {settings.suno_api_key}",
         "Content-Type": "application/json"
     }
-
-
-async def save_upload_file(upload_file: UploadFile) -> tuple[str, str]:
-    """
-    Save uploaded file and return file path and public URL
-
-    Args:
-        upload_file: The uploaded file from FastAPI
-
-    Returns:
-        tuple: (local_file_path, public_url)
-    """
-    # Generate unique filename
-    file_extension = Path(upload_file.filename).suffix
-    unique_filename = f"{uuid.uuid4()}{file_extension}"
-    file_path = UPLOAD_DIR / unique_filename
-
-    # Save file
-    with file_path.open("wb") as buffer:
-        shutil.copyfileobj(upload_file.file, buffer)
-
-    # Generate public URL
-    public_url = f"{settings.public_base_url}/uploads/{unique_filename}"
-
-    return str(file_path), public_url
-
 
 def validate_file_size(file_size: int) -> None:
     """Validate uploaded file size"""
